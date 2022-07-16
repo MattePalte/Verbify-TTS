@@ -1,0 +1,13 @@
+# Verbify-TTS Configuration File
+# AUTHOR: Matteo Paltenghi
+
+
+# The speed of the reading
+# 1.45 is fairly fast,
+# 1.15 is calm
+# 1 is the one used during training
+reading_speed: 1.45
+
+# Where you want to start the Verbify-TTS server
+server_port: 5069
+

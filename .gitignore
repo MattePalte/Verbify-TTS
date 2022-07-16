@@ -1,0 +1,15 @@
+
+# Temporary files
+tmp_audio_tts_deep_learning/*.wav
+
+# Virtual Environment
+env/
+
+# Old requirements.txt
+requirements_manual.txt
+
+# Python cache
+*.pyc
+
+# Script generated files
+START_TTS.sh
