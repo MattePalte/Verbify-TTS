@@ -53,11 +53,24 @@ This is dependent on the specific window manager you are using, so you have to G
 
 1. **RESTART AND READY TO GO!** Once you connected the key bindings, you have to restart the system and Verbify-TTS will be ready to use. Select any text and press the key binding you have set (e.g. ALT + ESC) to read it out loud.
 
+1. **LEAVE A STAR.** If you like Verbify-TTS please drop a star at the top right of this page to support the project and thank the developers.
+
 
 ## Disclaimer
-Note: the system has been tested:
+Note: the system has been tested with:
 - Linux (Ubuntu 20.04)
 - Python 3.8.8
 - XFCE window manager for shortcut (Xubuntu 20.04)
 Feel free to open an issue in this repository if you are having troubles with the installation on another operative system.
 
+Other configurations are not guaranteed to work, please create an issue so that we can help you.
+
+
+## Acknowledgements
+Thanks to [TensorSpeech](https://github.com/TensorSpeech) for having trained and shared under [Apache License 2](https://www.apache.org/licenses/LICENSE-2.0) the AI models used under-the-hood by Verbify-TTS: [tensorspeech/tts-fastspeech2-ljspeech-en](https://huggingface.co/tensorspeech/tts-fastspeech2-ljspeech-en) and [tensorspeech/tts-mb_melgan-ljspeech-en](https://huggingface.co/tensorspeech/tts-mb_melgan-ljspeech-en).
+
+Beside leaving a start to Verbify-TTS, please drop a star also on their [repository](https://github.com/TensorSpeech) since they were vital for the success of Verbify-TTS.
+
+Thanks to the researchers who developed the AI models:
+- [**FastSpeech 2: Fast and High-Quality End-to-End Text to Speech**](https://arxiv.org/abs/2006.04558), Yi Ren and Chenxu Hu and Xu Tan and Tao Qin and Sheng Zhao and Zhou Zhao and Tie-Yan Liu.
+- [**Multi-band MelGAN: Faster Waveform Generation for High-Quality Text-to-Speech**](https://arxiv.org/abs/2005.05106), Geng Yang and Shan Yang and Kai Liu and Peng Fang and Wei Chen and Lei Xie.
