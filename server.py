@@ -99,6 +99,8 @@ def get_model_api():
         # fastspeech inference
 
         raw_input = input_data["text"]
+        if "." not in raw_input:
+            raw_input += "."
         raw_input = replace_idioms(raw_input)
         sentences = raw_input.split(".")
 
