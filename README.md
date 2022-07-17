@@ -56,6 +56,9 @@ This is dependent on the specific window manager you are using, so you have to G
 1. **LEAVE A STAR.** If you like Verbify-TTS please drop a star at the top right of this page to support the project and thank the developers.
 
 
+*Change reading speed*: change the constant `reading_speed` in the configuration file at [configuration/config.yaml](configuration/config.yaml).
+A value of `1.45` is the default reading speed which I use to be more productive, but `1` is the value to give a more natural voice, just a bit slower.
+
 ## Disclaimer
 Note: the system has been tested with:
 - Linux (Ubuntu 20.04)
