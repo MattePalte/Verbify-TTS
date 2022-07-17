@@ -26,6 +26,8 @@ Some popular use cases of Verbify-TTS are:
 ## Simple Installation Guide for Everyone
 This guide is designed also for non-tech people.
 
+If you are more a visual guy, you can also look at the [VIDEO TUTORIAL](https://youtu.be/hb1ZVwUcPCU) I created for you.
+
 To install the *Verbify-TTS* on your system you need to follow few simple steps.
 Note that, for those of you unfamiliar with technology we have some *tips* to help you.
 
