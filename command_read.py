@@ -12,12 +12,15 @@ import time
 from utils import read_yaml_file
 from utils import get_root_directory
 
-pya.hotkey("ctrl", "c")
+
+with pya.hold('ctrl'):
+    pya.press(['c'])
 root = Tk()
-root.withdraw()
 text_from_clipboard = root.clipboard_get()
-text_to_pronounce = text_from_clipboard
 time.sleep(100/1000)  # milliseconds
+root.withdraw()
+text_to_pronounce = text_from_clipboard
+
 
 # MANUAL SERVER - FOR DEBUG
 # sample_text = 'First words. Second words. many more words for you.'
