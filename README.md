@@ -48,10 +48,16 @@ Note that, for those of you unfamiliar with technology we have some *tips* to he
         ./INSTALL_LINUX.sh
         ```
         The installer will stop when all the packages have been downloaded and it will ask you if you want to start the service at each startup of the computer, type `y` and click enter, then insert the password of the `root` user or admin.
+    1. WINDOWS case: Type the following in your terminal and click enter:
+        ```bash
+        .\\INSTALL_WINDOWS.py
+        ```
+        The installer will stop when all the packages have been downloaded and it will give you information on the specific shortcuts for Windows.
     1. MAC OS and WINDOW (open an issue in this repository if interested, or upvote an existing one.)
 
 1. **SET YOUR KEY SHORTCUT.** At the end of the installation, the terminal will give you two commands which you have to connect to the key bindings of your window manager system so that you can use these shortcut anywhere.
-This is dependent on the specific window manager you are using, so you have to Google a bit on how to do that in your specific case. I tested on XFCE you can find it [here](https://docs.xfce.org/xfce/xfce4-settings/4.14/keyboard). We recommend ALT + ESC to start the reading and ALT + END to end the reading, but you can choose whatever you want.
+    - **Linux**: This is dependent on the specific window manager you are using, so you have to Google a bit on how to do that in your specific case. I tested on XFCE you can find it [here](https://docs.xfce.org/xfce/xfce4-settings/4.14/keyboard). We recommend ALT + ESC to start the reading and ALT + END to end the reading, but you can choose whatever you want.
+    - **Windows**: You need to install AutoHotKey which you can find [here](https://www.autohotkey.com/). Then restart the system and it should work.
 
 1. **RESTART AND READY TO GO!** Once you connected the key bindings, you have to restart the system and Verbify-TTS will be ready to use. Select any text and press the key binding you have set (e.g. ALT + ESC) to read it out loud.
 
