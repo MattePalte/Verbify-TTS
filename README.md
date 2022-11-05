@@ -53,7 +53,7 @@ Note that, for those of you unfamiliar with technology we have some *tips* to he
         .\\INSTALL_WINDOWS.py
         ```
         The installer will stop when all the packages have been downloaded and it will give you information on the specific shortcuts for Windows.
-    1. MAC OS and WINDOW (open an issue in this repository if interested, or upvote an existing one.)
+    1. MAC OS case (open an issue in this repository if interested, or upvote an existing one.)
 
 1. **SET YOUR KEY SHORTCUT.** At the end of the installation, the terminal will give you two commands which you have to connect to the key bindings of your window manager system so that you can use these shortcut anywhere.
     - **Linux**: This is dependent on the specific window manager you are using, so you have to Google a bit on how to do that in your specific case. I tested on XFCE you can find it [here](https://docs.xfce.org/xfce/xfce4-settings/4.14/keyboard). We recommend ALT + ESC to start the reading and ALT + END to end the reading, but you can choose whatever you want.
