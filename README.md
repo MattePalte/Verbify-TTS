@@ -57,7 +57,7 @@ Note that, for those of you unfamiliar with technology we have some *tips* to he
 
 1. **SET YOUR KEY SHORTCUT.** At the end of the installation, the terminal will give you two commands which you have to connect to the key bindings of your window manager system so that you can use these shortcut anywhere.
     - **Linux**: This is dependent on the specific window manager you are using, so you have to Google a bit on how to do that in your specific case. I tested on XFCE you can find it [here](https://docs.xfce.org/xfce/xfce4-settings/4.14/keyboard). We recommend ALT + ESC to start the reading and ALT + END to end the reading, but you can choose whatever you want.
-    - **Windows**: You need to install AutoHotKey which you can find [here](https://www.autohotkey.com/). Then restart the system and it should work.
+    - **Windows**: You need to install AutoHotKey which you can find [here](https://www.autohotkey.com/). Then restart the system and it should work. For Window the default shortcut is CTRL + ESC to start the reading and CTRL + END to end the reading.
 
 1. **RESTART AND READY TO GO!** Once you connected the key bindings, you have to restart the system and Verbify-TTS will be ready to use. Select any text and press the key binding you have set (e.g. ALT + ESC) to read it out loud.
 
@@ -66,6 +66,8 @@ Note that, for those of you unfamiliar with technology we have some *tips* to he
 
 *Change reading speed*: change the constant `reading_speed` in the configuration file at [configuration/config.yaml](configuration/config.yaml).
 A value of `1.45` is the default reading speed which I use to be more productive, but `1` is the value to give a more natural voice, just a bit slower.
+
+*Change shortcuts on Windows*: to change the shortcut, you can change the `base_read.ahk` and `base_stop.ahk` files in the `configuration` folder before running the installer. You can also change the shortcut after the installation by editing the `base_read.ahk` and `base_stop.ahk` files in the startup folder: `C:\Users\User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`.
 
 ## Disclaimer
 Note: the system has been tested with:
