@@ -50,7 +50,7 @@ Note that, for those of you unfamiliar with technology we have some *tips* to he
         The installer will stop when all the packages have been downloaded and it will ask you if you want to start the service at each startup of the computer, type `y` and click enter, then insert the password of the `root` user or admin.
     1. WINDOWS case: Type the following in your terminal and click enter:
         ```bash
-        .\INSTALL_WINDOWS.py
+        .\INSTALL_WINDOWS.bat
         ```
         The installer will stop when all the packages have been downloaded and it will give you information on the specific shortcuts for Windows.
     1. MAC OS case (open an issue in this repository if interested, or upvote an existing one.)
