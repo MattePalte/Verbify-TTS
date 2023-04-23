@@ -5,6 +5,7 @@ AUTHOR: Matteo Paltenghi
 import yaml
 import pathlib
 
+
 def read_yaml_file(filename):
     """Reads a yaml file and returns a dictionary."""
     with open(filename, "r") as f:

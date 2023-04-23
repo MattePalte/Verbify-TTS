@@ -82,8 +82,17 @@ Other configurations are not guaranteed to work, please create an issue so that 
 ## Acknowledgements
 Thanks to [TensorSpeech](https://github.com/TensorSpeech) for having trained and shared under [Apache License 2](https://www.apache.org/licenses/LICENSE-2.0) the AI models used under-the-hood by Verbify-TTS: [tensorspeech/tts-fastspeech2-ljspeech-en](https://huggingface.co/tensorspeech/tts-fastspeech2-ljspeech-en) and [tensorspeech/tts-mb_melgan-ljspeech-en](https://huggingface.co/tensorspeech/tts-mb_melgan-ljspeech-en).
 
+Thanks to [fiarseq](https://github.com/facebookresearch/fairseq) project as well.
+
 Beside leaving a start to Verbify-TTS, please drop a star also on their [repository](https://github.com/TensorSpeech) since they were vital for the success of Verbify-TTS.
 
 Thanks to the researchers who developed the AI models:
 - [**FastSpeech 2: Fast and High-Quality End-to-End Text to Speech**](https://arxiv.org/abs/2006.04558), Yi Ren and Chenxu Hu and Xu Tan and Tao Qin and Sheng Zhao and Zhou Zhao and Tie-Yan Liu.
 - [**Multi-band MelGAN: Faster Waveform Generation for High-Quality Text-to-Speech**](https://arxiv.org/abs/2005.05106), Geng Yang and Shan Yang and Kai Liu and Peng Fang and Wei Chen and Lei Xie.
+
+
+# In Development
+
+Remember to install `apt-get install sox` on Linux to use the change speed feature command. It is multi-platform [https://sox.sourceforge.net/](https://sox.sourceforge.net/).
+
+To run the server run: `python -m verbify_tts.services.tts`

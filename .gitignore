@@ -4,6 +4,7 @@ tmp_audio_tts_deep_learning/*.wav
 
 # Virtual Environment
 env/
+venv*/
 
 # Old requirements.txt
 requirements_manual.txt

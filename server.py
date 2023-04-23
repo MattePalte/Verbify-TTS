@@ -24,7 +24,7 @@ import tensorflow as tf
 from tensorflow_tts.inference import TFAutoModel
 from tensorflow_tts.inference import AutoProcessor
 
-from utils import read_yaml_file
+from verbify_tts.utils import read_yaml_file
 
 
 TEMPORARY_AUDIO_FOLDER = "tmp_audio_tts_deep_learning"

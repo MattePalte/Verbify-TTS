@@ -1,1 +1,0 @@
-This folder contains all the temporary files of your readings in `.wav` format. It is emptied every time you restart the service (e.g. at every startup of your computer).
