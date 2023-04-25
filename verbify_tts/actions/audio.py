@@ -64,8 +64,6 @@ def play_audio(audio_file_path: str) -> None:
     pygame.mixer.init()
     pygame.mixer.music.load(audio_file_path)
     pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy():
-        time.sleep(300)
 
 
 def transcribe(filepath: str, endpoint_ip: str = "localhost", endpoint_port: int = 9000) -> str:
@@ -132,9 +130,10 @@ def listen_and_execute():
             with tempfile.TemporaryDirectory() as tmpdirname:
                 print('created temporary directory', tmpdirname)
                 # Test the record_audio method
+                play_audio(audio_file_path="verbify_tts/resources/start_record.mp3")
                 file_path = record_audio(tmpdirname, 3)
                 print(file_path)
-                beep()
+                play_audio(audio_file_path="verbify_tts/resources/sent_for_processing.mp3")
                 command = transcribe(file_path)
                 command = command.lower()
                 beep()
