@@ -19,6 +19,8 @@ from typing import Callable, List, Tuple
 from pygame import mixer
 
 from verbify_tts.actions.scrolling import scroll_down, scroll_up
+from verbify_tts.actions.audio import listen_and_execute
+from verbify_tts.actions.audio import beep
 
 
 mp_pose = mp.solutions.pose
@@ -56,7 +58,11 @@ class ActionReaction(object):
 def is_waist_up(landmarks: List[Tuple[float, float, float]]) -> bool:
     """Check if the waist of the person is above the half of the screen."""
     try:
-        return landmarks[mp_pose.PoseLandmark.LEFT_HIP].y < 0.5
+        return (
+            # left hip is visible
+            landmarks[mp_pose.PoseLandmark.LEFT_HIP].visibility > 0.5 and
+            # left hip is above the half of the screen
+            landmarks[mp_pose.PoseLandmark.LEFT_HIP].y < 0.5)
     except:
         return False
 
@@ -64,7 +70,11 @@ def is_waist_up(landmarks: List[Tuple[float, float, float]]) -> bool:
 def is_shoulder_down(landmarks: List[Tuple[float, float, float]]) -> bool:
     """Check if the waist of the person is below the half of the screen."""
     try:
-        return landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].y > 0.5
+        return (
+            # left shoulder is visible
+            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].visibility > 0.5 and
+            # left shoulder is below the half of the screen
+            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].y > 0.5)
     except:
         return False
 
@@ -86,13 +96,25 @@ def both_elbow_up(landmarks: List[Tuple[float, float, float]]) -> bool:
         return False
 
 
-def beep():
-    """Play the mp3 file with the beep sound."""
-    path = os.path.join("verbify_tts/resources/success.mp3")
-    # Starting the mixer
-    mixer.init()
-    mixer.music.load(path)
-    mixer.music.play()
+def overlap_hands(landmarks: List[Tuple[float, float, float]]) -> bool:
+    """Check if the hands are overlapping.
+
+    Namely if the distance between the wrists is less than 0.1.
+    """
+    min_distance = 0.1
+    try:
+        return (
+            # all are visible
+            landmarks[mp_pose.PoseLandmark.LEFT_WRIST].visibility > 0.5 and
+            landmarks[mp_pose.PoseLandmark.RIGHT_WRIST].visibility > 0.5 and
+            # the elbows are above the shoulders
+            (landmarks[mp_pose.PoseLandmark.LEFT_WRIST].x
+             - landmarks[mp_pose.PoseLandmark.RIGHT_WRIST].x) < min_distance and
+            (landmarks[mp_pose.PoseLandmark.LEFT_WRIST].y
+             - landmarks[mp_pose.PoseLandmark.RIGHT_WRIST].y) < min_distance
+        )
+    except:
+        return False
 
 
 def main():
@@ -100,13 +122,17 @@ def main():
     CURRENT_STATE = None
 
     action_reactions = [
-        ActionReaction( "shoulder_down -> scroll down", is_shoulder_down, scroll_down),
+        ActionReaction("shoulder_down -> scroll down", is_shoulder_down, scroll_down),
         ActionReaction("elbows up -> scroll up", both_elbow_up, scroll_up),
+        ActionReaction("overlap hands -> record", overlap_hands, listen_and_execute),
+    ]
+    # add the neutral state with a lambda which is true when nothing else is true
+    other_checkers = [ar.check for ar in action_reactions]
+    action_reactions.append(
         ActionReaction(
             name="neutral_state",
-            checker=lambda x: not is_shoulder_down(x) and not both_elbow_up(x),
-            action=lambda: None)
-    ]
+            checker=lambda x: not any([c(x) for c in other_checkers]),
+            action=lambda: None))
 
     cap = cv2.VideoCapture(0)
 
@@ -146,7 +172,9 @@ def main():
                             print(f"STATE CHANGE: CHECKER: {action_reaction} fired!")
                             CURRENT_STATE = action_reaction
                             # produce a bip signal
-                            if action_reaction.name != "neutral_state":
+                            # if not neutral and if no recording is happening
+                            if (action_reaction.name != "neutral_state" and
+                                    "record" not in action_reaction.name):
                                 beep()
                             action_reaction.react()
                             break
