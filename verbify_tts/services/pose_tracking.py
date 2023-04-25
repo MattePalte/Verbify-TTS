@@ -69,6 +69,23 @@ def is_shoulder_down(landmarks: List[Tuple[float, float, float]]) -> bool:
         return False
 
 
+def both_elbow_up(landmarks: List[Tuple[float, float, float]]) -> bool:
+    """Check if both elbows are above the respective shoulders."""
+    try:
+        return (
+            # all are visible
+            landmarks[mp_pose.PoseLandmark.LEFT_ELBOW].visibility > 0.5 and
+            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].visibility > 0.5 and
+            landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW].visibility > 0.5 and
+            landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER].visibility > 0.5 and
+            # the elbows are above the shoulders
+            landmarks[mp_pose.PoseLandmark.LEFT_ELBOW].y < landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].y and
+            landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW].y < landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER].y
+        )
+    except:
+        return False
+
+
 def beep():
     """Play the mp3 file with the beep sound."""
     path = os.path.join("verbify_tts/resources/success.mp3")
@@ -83,11 +100,11 @@ def main():
     CURRENT_STATE = None
 
     action_reactions = [
-        ActionReaction("shoulder_down -> scroll down", is_shoulder_down, scroll_down),
-        ActionReaction("jump -> scroll up", is_waist_up, scroll_up),
+        ActionReaction( "shoulder_down -> scroll down", is_shoulder_down, scroll_down),
+        ActionReaction("elbows up -> scroll up", both_elbow_up, scroll_up),
         ActionReaction(
             name="neutral_state",
-            checker=lambda x: not is_shoulder_down(x) and not is_waist_up(x),
+            checker=lambda x: not is_shoulder_down(x) and not both_elbow_up(x),
             action=lambda: None)
     ]
 
@@ -129,7 +146,8 @@ def main():
                             print(f"STATE CHANGE: CHECKER: {action_reaction} fired!")
                             CURRENT_STATE = action_reaction
                             # produce a bip signal
-                            beep()
+                            if action_reaction.name != "neutral_state":
+                                beep()
                             action_reaction.react()
                             break
 
