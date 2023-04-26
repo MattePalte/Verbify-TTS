@@ -21,6 +21,7 @@ from pygame import mixer
 from verbify_tts.actions.scrolling import scroll_down, scroll_up
 from verbify_tts.actions.audio import listen_and_execute
 from verbify_tts.actions.audio import beep
+from verbify_tts.actions.logger import save_image
 
 
 mp_pose = mp.solutions.pose
@@ -141,6 +142,7 @@ def main():
             min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
             success, image = cap.read()
+            image_original = image
             if not success:
                 print("Ignoring empty camera frame.")
                 # If loading a video, use 'break' instead of 'continue'.
@@ -169,6 +171,12 @@ def main():
                     for action_reaction in action_reactions:
                         if (action_reaction.check(landmarks) and
                                 CURRENT_STATE != action_reaction):
+                            # log all the screen images, except for the neural state
+                            if action_reaction.name != "neutral_state":
+                                save_image(
+                                    image_original=image_original,
+                                    image_with_markers=image,
+                                    category=action_reaction.checker.__name__)
                             print(f"STATE CHANGE: CHECKER: {action_reaction} fired!")
                             CURRENT_STATE = action_reaction
                             # produce a bip signal
