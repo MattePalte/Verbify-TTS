@@ -75,7 +75,7 @@ def is_shoulder_down(landmarks: List[Tuple[float, float, float]]) -> bool:
             # left shoulder is visible
             landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].visibility > 0.5 and
             # left shoulder is below the half of the screen
-            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].y > 0.5)
+            landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER].y > 0.75)
     except:
         return False
 

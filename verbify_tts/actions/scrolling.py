@@ -14,7 +14,7 @@ def scroll_down(speed: float = 0.1):
         speed: Speed of the scrolling. Default 0.1.
     """
     # move the mouse in the middle of the screen and then
-    pyautogui.scroll(-2, speed)
+    pyautogui.scroll(-5, speed)
 
 
 def scroll_up(speed: float = 0.1):
@@ -23,4 +23,4 @@ def scroll_up(speed: float = 0.1):
         speed: Speed of the scrolling. Default 0.1.
     """
     # move the mouse in the middle of the screen and then
-    pyautogui.scroll(2, speed)
+    pyautogui.scroll(5, speed)
