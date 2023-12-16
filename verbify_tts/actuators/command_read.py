@@ -45,7 +45,9 @@ def command_speak_selection():
     payload = {
         'text': simple_reprocessing(text_to_pronounce),
         'speed': config["reading_speed"]}
-    r = requests.post(f'http://{LOCAL_IP}:{config["server_port"]}/api', json=payload)
+    r = requests.post(
+        f'http://{LOCAL_IP}:{config["server_port"]}/read',
+        params=payload)
     print(r.text)
 
 

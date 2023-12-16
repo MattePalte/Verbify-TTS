@@ -69,6 +69,7 @@ A value of `1.45` is the default reading speed which I use to be more productive
 
 *Change shortcuts on Windows*: to change the shortcut, you can change the `base_read.ahk` and `base_stop.ahk` files in the `configuration` folder before running the installer. You can also change the shortcut after the installation by editing the `base_read.ahk` and `base_stop.ahk` files in the startup folder: `C:\Users\User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`.
 
+
 ## Disclaimer
 Note: the system has been tested with:
 - Linux (Ubuntu 20.04)
@@ -77,6 +78,12 @@ Note: the system has been tested with:
 Feel free to open an issue in this repository if you are having troubles with the installation on another operative system.
 
 Other configurations are not guaranteed to work, please create an issue so that we can help you.
+
+
+## Multiplatform support
+
+We are working on a general script that installs the tool for both Windows and Linux.
+You can find more details [here](MULTIPLATFORM.md).
 
 
 ## Acknowledgements

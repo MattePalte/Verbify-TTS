@@ -14,3 +14,13 @@ requirements_manual.txt
 
 # Script generated files
 START_TTS.sh
+
+
+# IDE
+.vscode/
+
+# files from build process
+*.egg-info/
+dist/
+build/
+target/

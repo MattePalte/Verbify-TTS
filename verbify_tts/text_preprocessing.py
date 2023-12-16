@@ -5,6 +5,7 @@ AUTHOR: Matteo Paltenghi
 
 import os
 import pandas as pd
+from verbify_tts.utils import get_root_directory
 
 
 def replace_acronyms(text):
@@ -25,7 +26,7 @@ def replace_acronyms(text):
 def replace_idioms(text):
     """Replace idioms such as "e.g." with "for example"."""
     df = pd.read_csv(
-        os.path.join("configuration/idioms.csv"),
+        os.path.join(get_root_directory(), "configuration/idioms.csv"),
         header=0, delimiter=",")
     for i, row in df.iterrows():
         text = text.replace(str(row["idiom"]), str(row["replacement"]))

@@ -23,16 +23,22 @@ from fairseq.checkpoint_utils import load_model_ensemble_and_task_from_hf_hub
 from fairseq.models.text_to_speech.hub_interface import TTSHubInterface
 
 from verbify_tts.utils import read_yaml_file
+from verbify_tts.utils import get_root_directory
 from verbify_tts.text_preprocessing import replace_acronyms
 from verbify_tts.text_preprocessing import replace_idioms
 
 
-config = read_yaml_file("configuration/config.yaml")
+config = read_yaml_file(os.path.join(
+    get_root_directory(), "configuration/config.yaml"))
+
 
 if platform.system() == "Windows":
     LOCAL_IP = "127.0.0.1"
 else:
     LOCAL_IP = "0.0.0.0"
+
+
+interrupt = False
 
 app = fastapi.FastAPI(port=config["server_port"])
 
@@ -55,6 +61,32 @@ TTSHubInterface.update_cfg_with_data_cfg(cfg, task.data_cfg)
 generator = task.build_generator(models[:1], cfg)
 
 
+# # MICROSOFT TTS
+# # SOURCE:
+# from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
+# from datasets import load_dataset
+# import torch
+# import soundfile as sf
+
+# processor = SpeechT5Processor.from_pretrained("microsoft/speecht5_tts")
+# model = SpeechT5ForTextToSpeech.from_pretrained("microsoft/speecht5_tts")
+# model.eval()
+# for param in model.parameters():
+#     param.grad = None
+# vocoder = SpeechT5HifiGan.from_pretrained("microsoft/speecht5_hifigan")
+
+
+# # load xvector containing speaker's voice characteristics from a dataset
+# embeddings_dataset = load_dataset("Matthijs/cmu-arctic-xvectors", split="validation")
+# #speaker_embeddings = torch.tensor(embeddings_dataset[7306]["xvector"]).unsqueeze(0)
+# speaker_embeddings = torch.tensor(embeddings_dataset[3444]["xvector"]).unsqueeze(0)
+
+# DEMO
+# inputs = processor(text="Hello, my dog is cute", return_tensors="pt")
+# speech = model.generate_speech(inputs["input_ids"], speaker_embeddings, vocoder=vocoder)
+# sf.write("speech.wav", speech.numpy(), samplerate=16000)
+
+
 def play_audio(
         file_path: str,
         prev_audio_task,
@@ -72,6 +104,10 @@ def play_audio(
         change_speed_thread.join()
     print("playing audio")
     pygame.mixer.init()
+    global interrupt
+    if interrupt:
+        print("interrupted: returning prematurely")
+        return
     obj_sound = pygame.mixer.Sound(file_path)
     channel = obj_sound.play()
     while channel.get_busy():
@@ -89,7 +125,7 @@ def change_speed(old_file_path: str, new_file_path: str, speed: float):
 
 
 @app.post("/read")
-async def read(text: str, speed: float = config["reading_speed"]):
+def read(text: str, speed: float = config["reading_speed"]):
     """Request to trigger the start of a the speech synthesis.
 
     Parameters
@@ -112,6 +148,8 @@ async def read(text: str, speed: float = config["reading_speed"]):
 
     all_outputs = []
 
+    global interrupt
+    interrupt = False
     audio_thread_tasks = {}
     speed_thread_tasks = {}
 
@@ -128,16 +166,27 @@ async def read(text: str, speed: float = config["reading_speed"]):
                 sentence += " " * 80 + "."  # add padding
                 print("sentence: ", sentence)
                 print("model entrance...")
+                # FACEBOOK
                 sample = TTSHubInterface.get_model_input(task, sentence)
                 wav, rate = TTSHubInterface.get_prediction(
                     task, model, generator, sample)
+                # MICROSOFT
+                # inputs = processor(
+                #     text=sentence.strip() + ".", return_tensors="pt")
+                # speech = model.generate_speech(
+                #     inputs["input_ids"],
+                #     speaker_embeddings,
+                #     vocoder=vocoder)
                 print("model exit... Done.")
                 # save the file as a temporary file with a unique name
                 unique_filename = str(uuid.uuid4())
                 file_path = os.path.join(tmp_dir_name, unique_filename + ".wav")
                 # write wav to file
                 # rate = int(rate * speed)
+                # FACEBOOK
                 sf.write(file_path, wav, rate)
+                # MICROSOFT
+                # sf.write(file_path, speech.numpy(), samplerate=16000)
 
                 # initialize the two threads in the dictionary
                 audio_thread_tasks[unique_filename] = None
@@ -182,9 +231,22 @@ async def read(text: str, speed: float = config["reading_speed"]):
     return text
 
 
-if __name__ == "__main__":
+@app.post("/stop")
+def stop():
+    """Request to stop the speech synthesis."""
+    global interrupt
+    interrupt = True
+    print(f"Interrupted!: {interrupt}")
+    return ""
+
+
+def main():
     if platform.system() == "Windows":
         LOCAL_IP = "127.0.0.1"
     else:
         LOCAL_IP = "0.0.0.0"
     uvicorn.run(app, host=LOCAL_IP, port=config["server_port"])
+
+
+if __name__ == "__main__":
+    main()
