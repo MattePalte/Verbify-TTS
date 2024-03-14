@@ -18,22 +18,25 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         # REST API
-        'fastapi',
-        'uvicorn',
+        'fastapi==0.95.1',
+        'uvicorn==0.21.1',
         # MODELING
-        'torch',
-        'transformers',
+        'torch==2.0.0',
+        'transformers==4.38.2',
+        'omegaconf==2.0.6',
+        'packaging==23.1',
+        'PyYAML==6.0',
         'fairseq==0.12.2',
         'g2p-en==2.1.0',
         # TEXT PREPROCESSING
-        'pandas',
-        'numpy',
-        'PyYAML==5.4.1',
+        'pandas==2.0.0',
+        'numpy==1.23.0',
         'PyAutoGUI==0.9.53',
         # AUDIO
         'pygame==2.3.0',
         'sox==1.4.1',
-        'soundfile==0.12.1'
+        'soundfile==0.12.1',
+        'scipy==1.10.1',
     ],
     packages=[
         'verbify_tts',

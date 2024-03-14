@@ -3,7 +3,6 @@
 import os
 import uuid
 import soundfile as sf
-import scipy
 
 import torch
 from transformers import VitsModel, AutoTokenizer
