@@ -19,15 +19,17 @@ import numpy as np
 import uvicorn
 import torch
 
-from fairseq.checkpoint_utils import load_model_ensemble_and_task_from_hf_hub
-from fairseq.models.text_to_speech.hub_interface import TTSHubInterface
 
 from verbify_tts.utils import read_yaml_file
 from verbify_tts.utils import get_root_directory
 from verbify_tts.text_preprocessing import replace_acronyms
 from verbify_tts.text_preprocessing import replace_idioms
 
+from verbify_tts.services.fastspeech_model import FastSpeechModel
+from verbify_tts.services.suno_model import SunoBarkModel
+from verbify_tts.services.mms_fb_model import MultiLingualSpeech
 
+print("loading configuration...")
 config = read_yaml_file(os.path.join(
     get_root_directory(), "configuration/config.yaml"))
 
@@ -42,24 +44,21 @@ interrupt = False
 
 app = fastapi.FastAPI(port=config["server_port"])
 
-# MODEL OPTIMIZATION FOR INFERENCE (OPTIONAL)
-torch.jit.enable_onednn_fusion(True)
-# PREPARE MODELS - REQUIRED
-models, cfg, task = load_model_ensemble_and_task_from_hf_hub(
-    "facebook/fastspeech2-en-ljspeech",
-    arg_overrides={"vocoder": "hifigan", "fp16": False}
-)
-# MODEL OPTIMIZATION FOR INFERENCE (OPTIONAL)
-for model in models:
-    model.eval()
-for model in models:
-    for param in model.parameters():
-        param.grad = None
-# PREPARE GENERATOR - REQUIRED
-model = models[0]
-TTSHubInterface.update_cfg_with_data_cfg(cfg, task.data_cfg)
-generator = task.build_generator(models[:1], cfg)
 
+model_name = config.get("model_name", "FastSpeech2")
+
+if model_name == "fastspeech2":
+    model = FastSpeechModel(
+        default_output_dir=config.get("wav_output_dir", None))
+elif model_name == "suno":
+    model = SunoBarkModel(
+        default_output_dir=config.get("wav_output_dir", None))
+elif model_name == "mms":
+    model = MultiLingualSpeech(
+        default_output_dir=config.get("wav_output_dir", None))
+
+
+model.initialize()
 
 # # MICROSOFT TTS
 # # SOURCE:
@@ -165,11 +164,13 @@ def read(text: str, speed: float = config["reading_speed"]):
                 sentence = replace_acronyms(sentence)
                 sentence += " " * 80 + "."  # add padding
                 print("sentence: ", sentence)
-                print("model entrance...")
-                # FACEBOOK
-                sample = TTSHubInterface.get_model_input(task, sentence)
-                wav, rate = TTSHubInterface.get_prediction(
-                    task, model, generator, sample)
+
+                # generate the audio file
+                file_path = model.generate_audio_file(
+                    text=sentence,
+                    speed=speed,  # might be ignored internally
+                    output_dir=tmp_dir_name)
+
                 # MICROSOFT
                 # inputs = processor(
                 #     text=sentence.strip() + ".", return_tensors="pt")
@@ -177,52 +178,55 @@ def read(text: str, speed: float = config["reading_speed"]):
                 #     inputs["input_ids"],
                 #     speaker_embeddings,
                 #     vocoder=vocoder)
-                print("model exit... Done.")
-                # save the file as a temporary file with a unique name
-                unique_filename = str(uuid.uuid4())
-                file_path = os.path.join(tmp_dir_name, unique_filename + ".wav")
                 # write wav to file
                 # rate = int(rate * speed)
-                # FACEBOOK
-                sf.write(file_path, wav, rate)
                 # MICROSOFT
                 # sf.write(file_path, speech.numpy(), samplerate=16000)
 
-                # initialize the two threads in the dictionary
-                audio_thread_tasks[unique_filename] = None
-                speed_thread_tasks[unique_filename] = None
+                # get the unique filename
+                unique_filename = os.path.basename(file_path)
 
-                # ALTERNATIVES TO CHANGE SPEED
-                # import librosa
-                #audio, fs = librosa.load(file_path)
-                # audio_different_speed = librosa.effects.time_stretch(
-                #     y=audio, rate=speed)
-                # import pyrubberband as pyrb
-                # audio_different_speed = pyrb.time_stretch(
-                #     audio, fs, speed)
-                #sf.write(file_path, audio_different_speed, fs)
+                # check if the model supports speed
+                if model.support_speed():
+                    pass
+                else:
+                    # if the model supports no speed, we do post-processing
+                    # initialize the two threads in the dictionary
+                    audio_thread_tasks[unique_filename] = None
+                    speed_thread_tasks[unique_filename] = None
 
-                # the changing speed tasks can work in parallel
-                new_path = file_path.replace(".wav", "_new.wav")
-                print("change speed chained...")
-                # change_speed_thread = asyncio.create_task(
-                #     change_speed(file_path, new_path, speed))
-                change_speed_thread = Thread(
-                    target=change_speed, args=(file_path, new_path, speed))
-                change_speed_thread.start()
+                    # ALTERNATIVES TO CHANGE SPEED
+                    # import librosa
+                    #audio, fs = librosa.load(file_path)
+                    # audio_different_speed = librosa.effects.time_stretch(
+                    #     y=audio, rate=speed)
+                    # import pyrubberband as pyrb
+                    # audio_different_speed = pyrb.time_stretch(
+                    #     audio, fs, speed)
+                    #sf.write(file_path, audio_different_speed, fs)
 
-                # start the thread
-                speed_thread_tasks[unique_filename] = change_speed_thread
-                file_path = new_path
+                    # the changing speed tasks can work in parallel
+                    new_path = file_path.replace(".wav", "_new.wav")
+                    print("change speed chained...")
+                    # change_speed_thread = asyncio.create_task(
+                    #     change_speed(file_path, new_path, speed))
+                    change_speed_thread = Thread(
+                        target=change_speed, args=(file_path, new_path, speed))
+                    change_speed_thread.start()
 
-                # audio_thread = asyncio.create_task(
-                #     play_audio(file_path, prev_audio_task, change_speed_thread))
-                audio_thread = Thread(
-                    target=play_audio, args=(file_path, prev_audio_task, change_speed_thread))
-                audio_thread.start()
-                prev_audio_task = audio_thread
-                audio_thread_tasks[unique_filename] = audio_thread
-                all_outputs.append(file_path)
+                    # start the thread
+                    speed_thread_tasks[unique_filename] = change_speed_thread
+                    file_path = new_path
+
+                    # audio_thread = asyncio.create_task(
+                    #     play_audio(file_path, prev_audio_task, change_speed_thread))
+                    audio_thread = Thread(
+                        target=play_audio, args=(file_path, prev_audio_task, change_speed_thread))
+                    audio_thread.start()
+                    prev_audio_task = audio_thread
+                    audio_thread_tasks[unique_filename] = audio_thread
+                    all_outputs.append(file_path)
+
             # wait for all the audio tasks to finish before returning
             for thread in audio_thread_tasks.values():
                 if thread is not None:

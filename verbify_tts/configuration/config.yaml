@@ -11,3 +11,8 @@ reading_speed: 1.45
 # Where you want to start the Verbify-TTS server
 server_port: 6069
 
+# which model to use
+# fastspeech2 -> for facebook/fastspeech2-en-ljspeech (huggingface model)
+# suno -> for suno/bark (huggingface model)
+# mms -> for facebook/mms-tts-eng
+model_name: fastspeech2
