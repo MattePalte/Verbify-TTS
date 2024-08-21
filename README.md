@@ -82,7 +82,7 @@ Other configurations are not guaranteed to work, please create an issue so that 
 ## Acknowledgements
 Thanks to [TensorSpeech](https://github.com/TensorSpeech) for having trained and shared under [Apache License 2](https://www.apache.org/licenses/LICENSE-2.0) the AI models used under-the-hood by Verbify-TTS: [tensorspeech/tts-fastspeech2-ljspeech-en](https://huggingface.co/tensorspeech/tts-fastspeech2-ljspeech-en) and [tensorspeech/tts-mb_melgan-ljspeech-en](https://huggingface.co/tensorspeech/tts-mb_melgan-ljspeech-en).
 
-Beside leaving a start to Verbify-TTS, please drop a star also on their [repository](https://github.com/TensorSpeech) since they were vital for the success of Verbify-TTS.
+Beside leaving a star to Verbify-TTS, please drop a star also on their [repository](https://github.com/TensorSpeech) since they were vital for the success of Verbify-TTS.
 
 Thanks to the researchers who developed the AI models:
 - [**FastSpeech 2: Fast and High-Quality End-to-End Text to Speech**](https://arxiv.org/abs/2006.04558), Yi Ren and Chenxu Hu and Xu Tan and Tao Qin and Sheng Zhao and Zhou Zhao and Tie-Yan Liu.
