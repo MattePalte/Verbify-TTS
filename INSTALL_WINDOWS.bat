@@ -71,7 +71,7 @@ echo "- COMMAND 1: READ THE TEXT (recommended key combination: CTRL + ESC)"
 echo "The following is to ask the service to read the selected text:"
 echo %PYTHON_PATH% %CD%\command_read_win.py
 :: copy the base_read.ahk from the configuration folder to the current directory
-copy configuration\base_read.ahk .
+copy verbify_tts\configuration\keyboard_shortcuts\windows\base_read.ahk .
 :: append the new command to read
 echo Run, %PYTHON_PATH% %CD%\command_read_win.py >> base_read.ahk
 echo return >> base_read.ahk
@@ -83,7 +83,7 @@ echo "- COMMAND 2: STOP READING (recommended key combination: CTRL + END)"
 echo "The following is to stop the current reading:"
 echo %PYTHON_PATH% %CD%\command_stop_win.py
 :: copy the base_stop.ahk from the configuration folder to the current directory
-copy configuration\base_stop.ahk .
+copy verbify_tts\configuration\keyboard_shortcuts\windows\base_stop.ahk .
 :: append the new command to stop
 echo Run, %PYTHON_PATH% %CD%\command_stop_win.py >> base_stop.ahk
 echo return >> base_stop.ahk

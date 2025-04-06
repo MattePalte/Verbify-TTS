@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "verbify-tts"
+version = "0.0.1"
+description = "A text-to-speech toolkit."
+readme = "README.md"
+authors = [
+    { name = "Matteo Paltenghi", email = "mattepalte@live.it" }
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.0.0",
+    "pyperclip>=1.8.0",
+    "pyautogui>=0.9.0",
+    "flask>=2.0.0",
+    "flask-cors>=3.0.0",
+    "pandas>=1.3.0",
+    "TensorFlowTTS==1.8",
+    "pygame>=2.0.0",
+    "soundfile>=0.10.0",
+    "pyyaml>=5.1",
+    "protobuf==3.20.0",
+    "tensorflow==2.7",
+    "german-transliterate @ git+https://github.com/repodiac/german_transliterate.git",
+]
+
+[project.scripts]
+verbify_tts_server = "verbify_tts.server:main"
+verbify_tts_command_read = "verbify_tts.command_read:main"
+verbify_tts_command_stop = "verbify_tts.command_stop:main"
+
+[tool.setuptools]
+packages = ["verbify_tts"]
+package-dir = {"" = "."}
+
+[tool.setuptools.package-data]
+"verbify_tts" = [
+    "verbify_tts/configuration/config.yaml",
+    "verbify_tts/configuration/idioms.csv"
+]

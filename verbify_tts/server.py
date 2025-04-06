@@ -24,10 +24,12 @@ import tensorflow as tf
 from tensorflow_tts.inference import TFAutoModel
 from tensorflow_tts.inference import AutoProcessor
 
-from utils import read_yaml_file
+from verbify_tts.utils import read_yaml_file
 
 
-TEMPORARY_AUDIO_FOLDER = "tmp_audio_tts_deep_learning"
+TEMPORARY_AUDIO_FOLDER = "/tmp/verbify_tts_audios"
+# TEMPORARY_AUDIO_FOLDER = os.path.join(THIS_SCRIPT_FOLDER, "tmp_verbify_tts_audios")
+os.makedirs(TEMPORARY_AUDIO_FOLDER, exist_ok=True)
 THIS_SCRIPT_FOLDER = pathlib.Path(__file__).parent.resolve()
 
 # 1. initialize model once and for all and reload weights
@@ -131,7 +133,7 @@ def get_model_api():
             random_id = str(randint(0, 10000000000))
             out_filename = f"{random_id}.wav"
             path_original_audio = os.path.join(
-                THIS_SCRIPT_FOLDER, TEMPORARY_AUDIO_FOLDER, out_filename)
+                TEMPORARY_AUDIO_FOLDER, out_filename)
             # save to file
             sf.write(path_original_audio, audio_before, 22050, "PCM_16")
             sf.write(path_original_audio, audio_after, 22050, "PCM_16")
@@ -204,9 +206,9 @@ def stop():
     return ""
 
 
-if __name__ == '__main__':
+def main():
     # clean folder with temporary files
-    tmp_folder_path = os.path.join(THIS_SCRIPT_FOLDER, TEMPORARY_AUDIO_FOLDER)
+    tmp_folder_path = TEMPORARY_AUDIO_FOLDER
     try:
         if os.path.isdir(tmp_folder_path):
             files = glob.glob(f'{tmp_folder_path}/*.wav')
@@ -217,5 +219,10 @@ if __name__ == '__main__':
     # to inspect the log of the server use the following command:
     # journalctl -xefu verify-tts.service
     config = read_yaml_file(
-        os.path.join(THIS_SCRIPT_FOLDER,"configuration/config.yaml"))
+        os.path.join(THIS_SCRIPT_FOLDER, "configuration/config.yaml"))
     app.run(host='0.0.0.0', debug=False, port=config["server_port"])
+
+
+if __name__ == '__main__':
+    # run the server
+    main()

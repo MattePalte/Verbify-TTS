@@ -1,0 +1,30 @@
+{
+    "type": "script",
+    "description": "shortcut_read",
+    "store": {},
+    "modes": [
+        3
+    ],
+    "usageCount": 41,
+    "prompt": false,
+    "omitTrigger": false,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [
+            "<alt>"
+        ],
+        "hotKey": "<escape>"
+    },
+    "filter": {
+        "regex": null,
+        "isRecursive": false
+    }
+}

@@ -13,3 +13,8 @@ requirements_manual.txt
 
 # Script generated files
 START_TTS.sh
+
+experiments/*
+build/*
+.vscode/*
+*.service
